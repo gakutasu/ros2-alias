@@ -40,12 +40,12 @@ function colcon_bt() {
     PKG_NAME=$(grep "<name>" package.xml | sed -e "s/<[^>]*>//g")
 
     cd $ROS_WS
-    colcon build --symlink-install --parallel-workers $(nproc) --packages-up-to $PKG_NAME
+    colcon build --symlink-install --cmake-args -DCMAKE_EXPORT_COMPILE_COMMANDS=ON --parallel-workers $(nproc) --packages-up-to $PKG_NAME
     cd "$dir"
 }
 
 # alias
 alias kill_ros_processes='ps aux | grep ros | grep -v grep | awk '"'"'{ print "kill -9", $2 }'"'"' | sh'
 alias colcon_clean='rm -rf $ROS_WS/install $ROS_WS/log $ROS_WS/build'
-alias colcon_build='(cd $ROS_WS && colcon build --symlink-install --parallel-workers $(nproc) && cd -)'
+alias colcon_build='(cd $ROS_WS && colcon build --symlink-install --cmake-args -DCMAKE_EXPORT_COMPILE_COMMANDS=ON --parallel-workers $(nproc) && cd -)'
 alias rosdep_install='rosdep install -r --from-paths . --ignore-src --rosdistro $ROS_DISTRO -y'
