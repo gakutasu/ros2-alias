@@ -10,4 +10,6 @@ This repository contains configurations, aliases, and functions to enhance your 
 
 ## Installation
 
-Please append the `.bashrc` file from this package to your own `.bashrc`.
+1. Please append the `.bashrc` file from this package to your own `.bashrc`.
+
+2. Next, replace the path `ROS_WS=~/ros` with the path to your ROS2 workspace.
