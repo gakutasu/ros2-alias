@@ -28,9 +28,24 @@ function colcon_source() {
     echo "Current directory is not a ROS2 workspace."
 }
 
+# colcon build only the package in the current directory
+function colcon_bt() {
+    local dir=$(pwd)
+
+    if [ ! -f "package.xml" ]; then
+        echo "Error: package.xml not found"
+        return 1
+    fi
+
+    PKG_NAME=$(grep "<name>" package.xml | sed -e "s/<[^>]*>//g")
+
+    cd $ROS_WS
+    colcon build --symlink-install --parallel-workers $(nproc) --packages-up-to $PKG_NAME
+    cd "$dir"
+}
+
 # alias
 alias kill_ros_processes='ps aux | grep ros | grep -v grep | awk '"'"'{ print "kill -9", $2 }'"'"' | sh'
-alias colcon_clean='rm -rf $ROS_WS/install log build'
-alias colcon_build='colcon build --symlink-install --parallel-workers $(nproc)'
-alias colcon_bt='CURRENT_DIR=$(pwd) && PKG_NAME=`grep "<name>" package.xml | sed -e "s/<[^>]*>//g"` && cd ~/ros && colcon build --parallel-workers $(nproc) --symlink-install --packages-select $PKG_NAME ; cd $CURRENT_DIR'
+alias colcon_clean='rm -rf $ROS_WS/install $ROS_WS/log $ROS_WS/build'
+alias colcon_build='(cd $ROS_WS && colcon build --symlink-install --parallel-workers $(nproc) && cd -)'
 alias rosdep_install='rosdep install -r --from-paths . --ignore-src --rosdistro $ROS_DISTRO -y'
