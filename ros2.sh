@@ -27,9 +27,13 @@ export RCUTILS_CONSOLE_OUTPUT_FORMAT='[{severity}]: {message}'
 function find_ros_workspace_root() {
     local dir=$(pwd)
     while [ "$dir" != "/" ]; do
-        if [ -f "$dir/install/setup.bash" ]; then
-            echo "$dir"
-            return
+        if [ -d "$dir/src" ]; then
+            for subdir in "$dir/src"/*/; do
+                if [ -f "${subdir}package.xml" ]; then
+                    echo "$dir"
+                    return
+                fi
+            done
         fi
         dir=$(dirname "$dir")
     done
