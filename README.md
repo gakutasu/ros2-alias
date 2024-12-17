@@ -1,15 +1,27 @@
-# ros2-bashrc-profile
+# ROS2 Aliases
 
-This repository contains configurations, aliases, and functions to enhance your ROS2 development environment by customizing the `.bashrc` file. By including these settings, you can streamline common ROS2 tasks and improve your workflow.
-
-## Features
-
-- **Custom Aliases:** Quickly execute common ROS2 commands with short and memorable aliases.
-- **Environment Setup:** Automatically set up ROS2 environment variables.
-- **Convenient Functions:** Use predefined functions to automate repetitive tasks.
+`ros2-aliases` provides useful command aliases for simplifying and speeding up the usage of ROS 2 workflows. With these aliases, you can more easily manage your ROS 2 environment, build processes, and commonly used commands.
 
 ## Installation
 
-1. Please append the `.bashrc` file from this package to your own `.bashrc`.
+Follow these steps to set up `ros2-aliases`:
 
-2. Next, replace the path `ROS_WS=~/ros` with the path to your ROS2 workspace.
+```sh
+git clone https://github.com/yourusername/ros2-aliases.git
+ln -s $(pwd)/ros2-aliases/ros2.sh ~/ros2.sh
+source ~/.bashrc
+```
+
+## ROS2 Default Workspace Path
+
+The default workspace path is set to:
+
+```sh
+ROS_WS=~/ros
+```
+
+You can freely change this path to match your preferred workspace location.
+
+---
+
+### Simplify Your ROS 2 Workflow 🚀
