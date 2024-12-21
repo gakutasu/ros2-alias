@@ -4,10 +4,6 @@
 ROS_WS=~/ros
 export _colcon_cd_root=$ROS_WS
 
-# export LIBGL_ALWAYS_SOFTWARE=1 # Disable hardware acceleration for GUI tools
-export RCUTILS_COLORIZED_OUTPUT=1 # Enable colorized output
-export RCUTILS_CONSOLE_OUTPUT_FORMAT='[{severity}]: {message}' # Simplify log output
-
 # Find ROS workspace root
 function find_ros_workspace_root() {
     local dir=$(pwd)
