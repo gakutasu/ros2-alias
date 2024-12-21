@@ -4,24 +4,9 @@
 ROS_WS=~/ros
 export _colcon_cd_root=$ROS_WS
 
-# Auto detect ROS2 distro
-ROS_DISTRO=""
-for d in /opt/ros/*; do
-    if [ -f "$d/setup.bash" ]; then
-        ROS_DISTRO=$(basename "$d")
-        break
-    fi
-done
-
-if [ -z "$ROS_DISTRO" ]; then
-    echo "No supported ROS2 distribution found."
-    return 1
-fi
-
-source /opt/ros/$ROS_DISTRO/setup.bash
-export LIBGL_ALWAYS_SOFTWARE=1
-export RCUTILS_COLORIZED_OUTPUT=1
-export RCUTILS_CONSOLE_OUTPUT_FORMAT='[{severity}]: {message}'
+export LIBGL_ALWAYS_SOFTWARE=1 # Disable hardware acceleration for GUI tools
+export RCUTILS_COLORIZED_OUTPUT=1 # Enable colorized output
+export RCUTILS_CONSOLE_OUTPUT_FORMAT='[{severity}]: {message}' # Simplify log output
 
 # Find ROS workspace root
 function find_ros_workspace_root() {
@@ -90,7 +75,7 @@ function rosdep_install() {
         echo "No ROS workspace found."
         return 1
     fi
-    (cd "$ws" && rosdep install -r --from-paths . --ignore-src --rosdistro $ROS_DISTRO -y)
+    (cd "$ws" && rosdep install -r --from-paths /src --ignore-src -y)
 }
 
 alias kill_ros_processes='ps aux | grep ros | grep -v grep | awk '"'"'{ print "kill -9", $2 }'"'"' | sh'
