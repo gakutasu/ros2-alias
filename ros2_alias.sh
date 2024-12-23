@@ -45,7 +45,7 @@ function colcon_bt() {
     fi
 
     local PKG_NAME=$(grep "<name>" package.xml | sed -e "s/<[^>]*>//g" | xargs)
-    (cd "$ws" && colcon build --symlink-install --cmake-args -DCMAKE_EXPORT_COMPILE_COMMANDS=ON --parallel-workers $(nproc) --packages-up-to "$PKG_NAME" && source install/setup.bash)
+    (cd "$ws" && colcon build --symlink-install --cmake-args -DCMAKE_EXPORT_COMPILE_COMMANDS=ON --parallel-workers $(nproc) --packages-up-to "$PKG_NAME" && source "$ws/install/setup.bash")
 }
 
 function colcon_clean() {
@@ -63,7 +63,7 @@ function colcon_build() {
         echo "No ROS workspace found."
         return 1
     fi
-    (cd "$ws" && colcon build --symlink-install --cmake-args -DCMAKE_EXPORT_COMPILE_COMMANDS=ON --parallel-workers $(nproc) && source install/setup.bash)
+    (cd "$ws" && colcon build --symlink-install --cmake-args -DCMAKE_EXPORT_COMPILE_COMMANDS=ON --parallel-workers $(nproc) && source "$ws/install/setup.bash")
 }
 
 function rosdep_install() {
