@@ -8,36 +8,30 @@ source $ROS_WS/install/setup.bash
 # Find ROS workspace root
 function find_ros_workspace_root() {
     local dir=$(pwd)
+
     while [ "$dir" != "/" ]; do
         if [ -d "$dir/src" ]; then
-            for subdir in "$dir/src"/*/; do
-                if [ -f "${subdir}package.xml" ]; then
-                    echo "$dir"
-                    return
-                fi
-            done
+            echo "$dir"  # 最初に見つかった `src/` を持つディレクトリを出力
+            return 0
         fi
         dir=$(dirname "$dir")
     done
+
+    # 赤色のエラーメッセージを出力
+    echo -e "\e[31mCurrent directory is not a ROS2 workspace.\e[0m" >&2
     return 1
 }
 
 function colcon_source() {
-    local ws=$(find_ros_workspace_root)
-    if [ -z "$ws" ]; then
-        echo "Current directory is not a ROS2 workspace."
-        return 1
-    fi
+    local ws
+    ws=$(find_ros_workspace_root) || return 1
+
     echo "Sourcing ROS2 workspace in $ws"
     source "$ws/install/setup.bash"
 }
 
 function colcon_bt() {
-    local ws=$(find_ros_workspace_root)
-    if [ -z "$ws" ]; then
-        echo "No ROS workspace found."
-        return 1
-    fi
+    local ws=$(find_ros_workspace_root) || return 1
 
     if [ ! -f "package.xml" ]; then
         echo "Error: package.xml not found."
@@ -45,37 +39,28 @@ function colcon_bt() {
     fi
 
     local PKG_NAME=$(grep "<name>" package.xml | sed -e "s/<[^>]*>//g" | xargs)
-    (cd "$ws" && colcon build --symlink-install --cmake-args -DCMAKE_EXPORT_COMPILE_COMMANDS=ON --parallel-workers $(nproc) --packages-up-to "$PKG_NAME" && source "$ws/install/setup.bash")
+    (cd "$ws" && colcon build --symlink-install --cmake-args -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_BUILD_TYPE=Release --event-handlers console_direct+ --parallel-workers $(nproc) --packages-up-to "$PKG_NAME" && source "$ws/install/setup.bash")
 }
 
 function colcon_clean() {
-    local ws=$(find_ros_workspace_root)
-    if [ -z "$ws" ]; then
-        echo "No ROS workspace found."
-        return 1
-    fi
+    local ws=$(find_ros_workspace_root) || return 1
+
     rm -rf "$ws/install" "$ws/log" "$ws/build"
 }
 
 function colcon_build() {
-    local ws=$(find_ros_workspace_root)
-    if [ -z "$ws" ]; then
-        echo "No ROS workspace found."
-        return 1
-    fi
-    (cd "$ws" && colcon build --symlink-install --cmake-args -DCMAKE_EXPORT_COMPILE_COMMANDS=ON --parallel-workers $(nproc) && source "$ws/install/setup.bash")
+    local ws=$(find_ros_workspace_root) || return 1
+
+    (cd "$ws" && colcon build --symlink-install --cmake-args -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_BUILD_TYPE=Release --event-handlers console_direct+ --parallel-workers $(nproc) && source "$ws/install/setup.bash")
 }
 
 function rosdep_install() {
-    local ws=$(find_ros_workspace_root)
-    if [ -z "$ws" ]; then
-        echo "No ROS workspace found."
-        return 1
-    fi
-    (cd "$ws" && rosdep install -r --from-paths /src --ignore-src -y)
+    local ws=$(find_ros_workspace_root) || return 1
+
+    (cd "$ws" && rosdep install --from-paths src --ignore-src -ry)
 }
 
-alias kill_ros_processes='ps aux | grep ros | grep -v grep | awk '"'"'{ print "kill -9", $2 }'"'"' | sh'
+alias killros='ps aux | grep ros | grep -v grep | awk '"'"'{ print "kill -9", $2 }'"'"' | sh'
 
 source /usr/share/colcon_cd/function/colcon_cd.sh
 
