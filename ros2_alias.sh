@@ -1,7 +1,7 @@
 #!/usr/bin/sh
 
-# Default ROS2 workspace
-ROS_WS=~/soar
+# ROS2 default workspace path
+ROS_WS=~/ros
 export _colcon_cd_root=$ROS_WS
 source $ROS_WS/install/setup.bash
 
