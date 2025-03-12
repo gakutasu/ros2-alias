@@ -38,7 +38,7 @@ colcon() {
             local pkg_name
             pkg_name=$(grep "<name>" package.xml | sed -e "s/<[^>]*>//g" | xargs)
             (cd "$ws" && "$REAL_COLCON" build --symlink-install --cmake-args -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
-                -DCMAKE_BUILD_TYPE=Release --event-handlers console_direct+ \
+                -DCMAKE_BUILD_TYPE=Release \
                 --parallel-workers "$(nproc)" --packages-up-to "$pkg_name")
             [ -f "$ws/install/setup.bash" ] && source "$ws/install/setup.bash"
             ;;
@@ -47,11 +47,11 @@ colcon() {
             ws=$(find_ros_workspace_root) || return 1
             if [ $# -gt 0 ]; then
                 (cd "$ws" && "$REAL_COLCON" build --symlink-install --cmake-args -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
-                    -DCMAKE_BUILD_TYPE=Release --event-handlers console_direct+ \
+                    -DCMAKE_BUILD_TYPE=Release \
                     --parallel-workers "$(nproc)" --packages-up-to "$1")
             else
                 (cd "$ws" && "$REAL_COLCON" build --symlink-install --cmake-args -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
-                    -DCMAKE_BUILD_TYPE=Release --event-handlers console_direct+ \
+                    -DCMAKE_BUILD_TYPE=Release \
                     --parallel-workers "$(nproc)")
             fi
             [ -f "$ws/install/setup.bash" ] && source "$ws/install/setup.bash"
