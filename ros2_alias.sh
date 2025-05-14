@@ -72,7 +72,7 @@ rosdep() {
         install)
             local ws
             ws=$(find_ros_workspace_root) || return 1
-            (cd "$ws" && "$REAL_ROSDEP" install --from-paths src --ignore-src -ry "$@")
+            (cd "$ws" && "$REAL_ROSDEP" install --from-paths src -ryi "$@")
             ;;
         *)
             "$REAL_ROSDEP" "$sub" "$@"
